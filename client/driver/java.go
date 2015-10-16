@@ -112,15 +112,11 @@ func (d *JavaDriver) Start(ctx *ExecContext, task *structs.Task) (DriverHandle, 
 	// Get the environment variables.
 	envVars := TaskEnvironmentVariables(ctx, task)
 
-	args := []string{}
 	// Look for jvm options
 	jvm_options, ok := task.Config["jvm_options"]
 	if ok && jvm_options != "" {
 		d.logger.Printf("[DEBUG] driver.java: found JVM options: %s", jvm_options)
 	}
-
-	// Build the argument list
-	args = append(args, "-jar", filepath.Join(allocdir.TaskLocal, fName))
 
 	// Build the argument list.
 	args := []string{"-jar", filepath.Join(allocdir.TaskLocal, jarName)}

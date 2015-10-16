@@ -121,43 +121,43 @@ func TestExecDriver_Start_Wait(t *testing.T) {
 }
 
 func TestExecDriver_Start_Artifact_Wait(t *testing.T) {
-        ctestutils.ExecCompatible(t)
-        task := &structs.Task{
-                Name: "sleep",
-                Config: map[string]string{
-                        "artifact_source": "https://dl.dropboxusercontent.com/u/47675/jar_thing/hi_linux_amd64",
-                },
-                Resources: basicResources,
-        }
+	ctestutils.ExecCompatible(t)
+	task := &structs.Task{
+		Name: "sleep",
+		Config: map[string]string{
+			"artifact_source": "https://dl.dropboxusercontent.com/u/47675/jar_thing/hi_linux_amd64",
+		},
+		Resources: basicResources,
+	}
 
-        driverCtx := testDriverContext(task.Name)
-        ctx := testDriverExecContext(task, driverCtx)
-        defer ctx.AllocDir.Destroy()
-        d := NewExecDriver(driverCtx)
+	driverCtx := testDriverContext(task.Name)
+	ctx := testDriverExecContext(task, driverCtx)
+	defer ctx.AllocDir.Destroy()
+	d := NewExecDriver(driverCtx)
 
-        handle, err := d.Start(ctx, task)
-        if err != nil {
-                t.Fatalf("err: %v", err)
-        }
-        if handle == nil {
-                t.Fatalf("missing handle")
-        }
+	handle, err := d.Start(ctx, task)
+	if err != nil {
+		t.Fatalf("err: %v", err)
+	}
+	if handle == nil {
+		t.Fatalf("missing handle")
+	}
 
-        // Update should be a no-op
-        err = handle.Update(task)
-        if err != nil {
-                t.Fatalf("err: %v", err)
-        }
+	// Update should be a no-op
+	err = handle.Update(task)
+	if err != nil {
+		t.Fatalf("err: %v", err)
+	}
 
-        // Task should terminate quickly
-        select {
-        case err := <-handle.WaitCh():
-                if err != nil {
-                        t.Fatalf("err: %v", err)
-                }
-        case <-time.After(2 * time.Second):
-                t.Fatalf("timeout")
-        }
+	// Task should terminate quickly
+	select {
+	case err := <-handle.WaitCh():
+		if err != nil {
+			t.Fatalf("err: %v", err)
+		}
+	case <-time.After(2 * time.Second):
+		t.Fatalf("timeout")
+	}
 }
 
 func TestExecDriver_Start_Wait_AllocDir(t *testing.T) {

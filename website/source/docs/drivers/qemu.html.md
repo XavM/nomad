@@ -24,7 +24,7 @@ The `Qemu` driver can execute any regular `qemu` image (e.g. `qcow`, `img`,
 The `Qemu` driver supports the following configuration in the job spec:
 
 * `image_source` - **(Required)** The hosted location of the source Qemu image. Must be accessible
-from the Nomad client, via HTTP.
+from the Nomad client
 * `checksum` - **(Required)** The MD5 checksum of the `qemu` image. If the
 checksums do not match, the `Qemu` diver will fail to start the image
 * `accelerator` - (Optional) The type of accelerator to use in the invocation.

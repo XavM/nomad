@@ -18,7 +18,7 @@ import (
 	"syscall"
 	"time"
 
-        "github.com/hashicorp/go-getter"
+	"github.com/hashicorp/go-getter"
 	"github.com/hashicorp/nomad/client/allocdir"
 	"github.com/hashicorp/nomad/client/config"
 	"github.com/hashicorp/nomad/nomad/structs"
@@ -100,19 +100,19 @@ func (d *QemuDriver) Start(ctx *ExecContext, task *structs.Task) (DriverHandle, 
 		return nil, fmt.Errorf("Could not find task directory for task: %v", d.DriverContext.taskName)
 	}
 
-        // Create a location to download the binary.
-        destDir := filepath.Join(taskDir, allocdir.TaskLocal)
+	// Create a location to download the binary.
+	destDir := filepath.Join(taskDir, allocdir.TaskLocal)
 	vmID := fmt.Sprintf("qemu-vm-%s-%s", structs.GenerateUUID(), filepath.Base(source))
-        vmPath := filepath.Join(destDir, vmID)
-        if err := getter.GetFile(vmPath, source); err != nil {
-                return nil, fmt.Errorf("Error downloading source for Java driver: %s", err)
+	vmPath := filepath.Join(destDir, vmID)
+	if err := getter.GetFile(vmPath, source); err != nil {
+		return nil, fmt.Errorf("Error downloading source for Java driver: %s", err)
 	}
 
 	// compute and check checksum
 	if check, ok := task.Config["checksum"]; ok {
 		d.logger.Printf("[DEBUG] Running checksum on (%s)", vmID)
 		hasher := sha256.New()
-                file, err := os.Open(vmPath)
+		file, err := os.Open(vmPath)
 		if err != nil {
 			return nil, fmt.Errorf("Failed to open file for checksum")
 		}
@@ -143,7 +143,7 @@ func (d *QemuDriver) Start(ctx *ExecContext, task *structs.Task) (DriverHandle, 
 		"-machine", "type=pc,accel=" + accelerator,
 		"-name", vmID,
 		"-m", mem,
-                "-drive", "file=" + vmPath,
+		"-drive", "file=" + vmPath,
 		"-nodefconfig",
 		"-nodefaults",
 		"-nographic",
@@ -220,7 +220,7 @@ func (d *QemuDriver) Start(ctx *ExecContext, task *structs.Task) (DriverHandle, 
 	// Create and Return Handle
 	h := &qemuHandle{
 		proc:   cmd.Process,
-                vmID:   vmPath,
+		vmID:   vmPath,
 		doneCh: make(chan struct{}),
 		waitCh: make(chan error, 1),
 	}
